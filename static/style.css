@@ -1,1 +1,573 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            #173d32,
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            #102d27,
+            transparent 35%
+        ),
+        #07110f;
+
+    color: #e8f5ef;
+
+    min-height: 100vh;
+}
+
+
+/* ================= HEADER ================= */
+
+.header {
+    text-align: center;
+
+    padding: 45px 20px 30px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+
+.logo {
+    font-size: 38px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    color: #ffffff;
+}
+
+
+.logo span {
+    color: #56e39f;
+}
+
+
+.subtitle {
+    margin-top: 12px;
+
+    color: #91a99f;
+
+    font-size: 15px;
+}
+
+
+/* ================= MAIN ================= */
+
+.container {
+    width: min(1000px, 92%);
+
+    margin: 40px auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 30px;
+}
+
+
+/* ================= CARD ================= */
+
+.card {
+
+    background: rgba(15, 29, 25, 0.88);
+
+    border: 1px solid rgba(86, 227, 159, 0.16);
+
+    border-radius: 22px;
+
+    padding: 32px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.35);
+
+    backdrop-filter: blur(12px);
+}
+
+
+.card-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+
+.card-title h2 {
+
+    font-size: 25px;
+
+    color: #ffffff;
+
+}
+
+
+.card-title p {
+
+    color: #849a91;
+
+    margin-top: 6px;
+
+    font-size: 14px;
+}
+
+
+.number {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(86,227,159,0.12);
+
+    border: 1px solid rgba(86,227,159,0.3);
+
+    color: #56e39f;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+
+/* ================= FORM ================= */
+
+.form-group {
+
+    margin-bottom: 22px;
+}
+
+
+.form-row {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+
+label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #cce1d8;
+
+    font-weight: 600;
+
+    font-size: 14px;
+}
+
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    background: #0a1815;
+
+    color: #eaf8f2;
+
+    border: 1px solid #263d35;
+
+    border-radius: 12px;
+
+    padding: 14px;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.25s;
+}
+
+
+textarea {
+
+    resize: vertical;
+
+    min-height: 110px;
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    border-color: #56e39f;
+
+    box-shadow:
+        0 0 0 3px rgba(86,227,159,0.08);
+}
+
+
+input[type="file"] {
+
+    padding: 11px;
+
+    cursor: pointer;
+}
+
+
+small {
+
+    display: block;
+
+    margin-top: 8px;
+
+    color: #71867d;
+
+    font-size: 12px;
+}
+
+
+/* ================= BUTTONS ================= */
+
+button {
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 16px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+
+.primary-btn {
+
+    background: #56e39f;
+
+    color: #07110f;
+}
+
+
+.primary-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(86,227,159,0.22);
+}
+
+
+.secondary-btn {
+
+    background: transparent;
+
+    color: #56e39f;
+
+    border: 1px solid #56e39f;
+}
+
+
+.secondary-btn:hover {
+
+    background: rgba(86,227,159,0.1);
+
+    transform: translateY(-2px);
+}
+
+
+/* ================= RESULTS ================= */
+
+.result-card {
+
+    margin-top: 25px;
+
+    padding: 22px;
+
+    border-radius: 15px;
+
+    background: #091713;
+
+    border: 1px solid #233a31;
+}
+
+
+.result-card h2 {
+
+    color: #56e39f;
+
+    font-size: 18px;
+
+    margin-bottom: 20px;
+}
+
+
+.result-item {
+
+    margin-bottom: 16px;
+}
+
+
+.result-item > span {
+
+    display: block;
+
+    color: #718b81;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 7px;
+}
+
+
+.result-value {
+
+    background: #0e211c;
+
+    border: 1px solid #20382f;
+
+    border-radius: 9px;
+
+    padding: 12px;
+
+    word-break: break-all;
+
+    color: #d8eee5;
+
+    font-family: monospace;
+
+    font-size: 13px;
+}
+
+
+.download-btn {
+
+    display: block;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    margin-top: 20px;
+
+    padding: 14px;
+
+    border-radius: 11px;
+
+    background: #56e39f;
+
+    color: #07110f;
+
+    font-weight: bold;
+}
+
+
+.download-btn:hover {
+
+    opacity: 0.9;
+}
+
+
+/* ================= PROCESS ================= */
+
+.process-card {
+
+    background: rgba(15,29,25,0.7);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    text-align: center;
+}
+
+
+.process-card h2 {
+
+    margin-bottom: 30px;
+
+    color: white;
+}
+
+
+.process {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 20px;
+}
+
+
+.process-item {
+
+    flex: 1;
+
+    max-width: 250px;
+
+    padding: 20px;
+
+    background: #0a1815;
+
+    border: 1px solid #213930;
+
+    border-radius: 16px;
+}
+
+
+.process-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    margin: auto auto 12px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(86,227,159,0.12);
+
+    color: #56e39f;
+
+    font-weight: bold;
+}
+
+
+.process-item h3 {
+
+    font-size: 16px;
+
+    margin-bottom: 8px;
+}
+
+
+.process-item p {
+
+    color: #81968d;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+.arrow {
+
+    color: #56e39f;
+
+    font-size: 25px;
+}
+
+
+/* ================= FOOTER ================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 30px;
+
+    color: #61766e;
+
+    font-size: 12px;
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+
+    margin-top: 20px;
+}
+
+
+footer p + p {
+
+    margin-top: 5px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 700px) {
+
+    .form-row {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .process {
+
+        flex-direction: column;
+    }
+
+
+    .arrow {
+
+        transform: rotate(90deg);
+    }
+
+
+    .process-item {
+
+        width: 100%;
+
+        max-width: none;
+    }
+
+
+    .logo {
+
+        font-size: 30px;
+    }
+
+
+    .card {
+
+        padding: 22px;
+    }
+}
