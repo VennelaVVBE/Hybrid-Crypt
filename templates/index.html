@@ -1,1 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Hybrid Cryptography</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">
+        🔐 Hybrid<span>Crypt</span>
+    </div>
+
+    <div class="subtitle">
+        Hybrid Cryptography using Hill Cipher, S-DES & LSB Steganography
+    </div>
+</header>
+
+
+<main class="container">
+
+    <!-- ================= ENCRYPTION ================= -->
+
+    <section class="card">
+
+        <div class="card-title">
+            <div class="number">01</div>
+
+            <div>
+                <h2>Encrypt Message</h2>
+                <p>Encrypt and hide your secret message inside an image.</p>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label>Secret Message</label>
+
+            <textarea
+                id="message"
+                placeholder="Enter your secret message..."
+                rows="4"></textarea>
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label>Hill Cipher Size</label>
+
+                <select id="hillSize" onchange="updateHillPlaceholder()">
+                    <option value="2">2 × 2 Matrix</option>
+                    <option value="3">3 × 3 Matrix</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>S-DES Key</label>
+
+                <input
+                    type="text"
+                    id="sdesKey"
+                    maxlength="10"
+                    placeholder="10-bit key e.g. 1010000010">
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Hill Cipher Key</label>
+
+            <input
+                type="text"
+                id="hillKey"
+                placeholder="2×2: 3,3;2,5">
+
+            <small id="hillHelp">
+                Enter 2 rows separated by ; and values separated by commas.
+                Example: 3,3;2,5
+            </small>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Cover Image</label>
+
+            <input
+                type="file"
+                id="image"
+                accept="image/*">
+
+        </div>
+
+
+        <button class="primary-btn" onclick="encryptMessage()">
+            🔒 ENCRYPT & HIDE
+        </button>
+
+
+        <div id="result"></div>
+
+    </section>
+
+
+
+    <!-- ================= DECRYPTION ================= -->
+
+    <section class="card">
+
+        <div class="card-title">
+
+            <div class="number">02</div>
+
+            <div>
+                <h2>Decrypt Message</h2>
+                <p>Extract and decrypt the hidden message.</p>
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Encrypted Image</label>
+
+            <input
+                type="file"
+                id="decryptImage"
+                accept="image/*">
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>Hill Cipher Size</label>
+
+                <select id="decryptHillSize"
+                        onchange="updateDecryptHillPlaceholder()">
+
+                    <option value="2">2 × 2 Matrix</option>
+                    <option value="3">3 × 3 Matrix</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>S-DES Key</label>
+
+                <input
+                    type="text"
+                    id="decryptSdesKey"
+                    maxlength="10"
+                    placeholder="Enter same 10-bit key">
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Hill Cipher Key</label>
+
+            <input
+                type="text"
+                id="decryptHillKey"
+                placeholder="2×2: 3,3;2,5">
+
+            <small id="decryptHillHelp">
+                Enter the same Hill Cipher key used during encryption.
+            </small>
+
+        </div>
+
+
+        <button class="secondary-btn" onclick="decryptMessage()">
+            🔓 EXTRACT & DECRYPT
+        </button>
+
+
+        <div id="decryptResult"></div>
+
+    </section>
+
+
+
+    <!-- ================= PROCESS ================= -->
+
+    <section class="process-card">
+
+        <h2>How It Works</h2>
+
+        <div class="process">
+
+            <div class="process-item">
+                <div class="process-icon">①</div>
+                <h3>Hill Cipher</h3>
+                <p>Encrypts the message using a matrix key.</p>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="process-item">
+                <div class="process-icon">②</div>
+                <h3>S-DES</h3>
+                <p>Provides an additional layer of encryption.</p>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="process-item">
+                <div class="process-icon">③</div>
+                <h3>LSB Steganography</h3>
+                <p>Hides the encrypted data inside an image.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        Hybrid Cryptography Project
+    </p>
+
+    <p>
+        Hill Cipher • S-DES • LSB Steganography
+    </p>
+
+</footer>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
