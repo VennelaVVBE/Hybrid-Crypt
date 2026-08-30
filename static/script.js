@@ -1,38 +1,32 @@
 // ============================================================
-// HILL MATRIX PLACEHOLDER
+// HILL MATRIX PLACEHOLDERS
 // ============================================================
 
 function updateHillPlaceholder() {
 
-    const size =
-        document.getElementById("hillSize").value;
+    const size = document.getElementById("hillSize").value;
+    const input = document.getElementById("hillKey");
+    const help = document.getElementById("hillHelp");
 
-    const input =
-        document.getElementById("hillKey");
+    if (size === "2") {
 
-    const help =
-        document.getElementById("hillHelp");
+        input.placeholder = "Example: 3,3;2,5";
 
-    if (size === "3") {
-
-        input.placeholder =
-            "6,24,1;13,16,10;20,17,15";
-
-        help.innerText =
-            "Example: 6,24,1;13,16,10;20,17,15";
+        help.textContent =
+            "Enter 2 rows separated by ; Example: 3,3;2,5";
 
     } else {
 
         input.placeholder =
-            "3,3;2,5";
+            "Example: 6,24,1;13,16,10;20,17,15";
 
-        help.innerText =
-            "Example: 3,3;2,5";
+        help.textContent =
+            "Enter 3 rows separated by ; Example: 6,24,1;13,16,10;20,17,15";
     }
 }
 
 
-function updateDecryptPlaceholder() {
+function updateDecryptHillPlaceholder() {
 
     const size =
         document.getElementById("decryptHillSize").value;
@@ -43,21 +37,21 @@ function updateDecryptPlaceholder() {
     const help =
         document.getElementById("decryptHillHelp");
 
-    if (size === "3") {
+    if (size === "2") {
 
         input.placeholder =
-            "6,24,1;13,16,10;20,17,15";
+            "Example: 3,3;2,5";
 
-        help.innerText =
-            "Enter the same 3×3 matrix used for encryption.";
+        help.textContent =
+            "Enter the same 2×2 key used during encryption.";
 
     } else {
 
         input.placeholder =
-            "3,3;2,5";
+            "Example: 6,24,1;13,16,10;20,17,15";
 
-        help.innerText =
-            "Enter the same 2×2 matrix used for encryption.";
+        help.textContent =
+            "Enter the same 3×3 key used during encryption.";
     }
 }
 
@@ -88,28 +82,19 @@ async function encryptMessage() {
 
 
     if (!message) {
-
         alert("Please enter a secret message.");
-
         return;
     }
-
 
     if (!hillKey) {
-
-        alert("Please enter a Hill Cipher matrix.");
-
+        alert("Please enter the Hill Cipher key.");
         return;
     }
-
 
     if (!image) {
-
         alert("Please select a cover image.");
-
         return;
     }
-
 
     if (
         sdesKey.length !== 10 ||
@@ -124,44 +109,21 @@ async function encryptMessage() {
     }
 
 
-    const formData =
-        new FormData();
+    const formData = new FormData();
 
-    formData.append(
-        "message",
-        message
-    );
-
-    formData.append(
-        "hill_key",
-        hillKey
-    );
-
-    formData.append(
-        "hill_size",
-        hillSize
-    );
-
-    formData.append(
-        "sdes_key",
-        sdesKey
-    );
-
-    formData.append(
-        "image",
-        image
-    );
+    formData.append("message", message);
+    formData.append("hill_key", hillKey);
+    formData.append("hill_size", hillSize);
+    formData.append("sdes_key", sdesKey);
+    formData.append("image", image);
 
 
     resultBox.innerHTML = `
-        <div class="result-card processing">
-
+        <div class="result-card">
             <h2>⟳ PROCESSING ENCRYPTION...</h2>
-
-            <p>
+            <p style="color:#71867d;font-size:10px">
                 Hill Cipher → S-DES → LSB Steganography
             </p>
-
         </div>
     `;
 
@@ -169,125 +131,64 @@ async function encryptMessage() {
     try {
 
         const response =
-            await fetch(
-                "/encrypt",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
+            await fetch("/encrypt", {
+                method: "POST",
+                body: formData
+            });
 
         const data =
             await response.json();
 
 
-        if (
-            !response.ok ||
-            data.status === "error"
-        ) {
+        if (!response.ok || data.status === "error") {
 
             throw new Error(
-                data.message ||
-                "Encryption failed."
+                data.message || "Encryption failed."
             );
         }
 
 
+        const downloadUrl =
+            "data:image/png;base64," + data.image;
+
+
         resultBox.innerHTML = `
 
-            <div class="result-card success">
+            <div class="result-card">
 
                 <h2>✓ ENCRYPTION COMPLETE</h2>
 
-
                 <div class="result-item">
-
                     <span>ORIGINAL MESSAGE</span>
-
                     <div class="result-value">
-                        ${escapeHtml(
-                            data.original_message
-                        )}
+                        ${escapeHtml(data.original_message)}
                     </div>
-
                 </div>
 
-
                 <div class="result-item">
-
-                    <span>HILL CIPHER MATRIX</span>
-
-                    <div class="matrix">
-                        ${formatMatrix(data.hill_key)}
-                    </div>
-
-                </div>
-
-
-                <div class="result-item">
-
-                    <span>DETERMINANT MOD 26</span>
-
-                    <div class="result-value">
-                        ${data.determinant}
-                    </div>
-
-                </div>
-
-
-                <div class="result-item">
-
                     <span>HILL CIPHER OUTPUT</span>
-
                     <div class="result-value">
-                        ${escapeHtml(
-                            data.hill_output
-                        )}
+                        ${escapeHtml(data.hill_output)}
                     </div>
-
                 </div>
 
-
                 <div class="result-item">
-
                     <span>S-DES OUTPUT</span>
-
-                    <div class="result-value binary">
-                        ${escapeHtml(
-                            data.sdes_output
-                        )}
-                    </div>
-
-                </div>
-
-
-                <div class="result-item">
-
-                    <span>INVERSE MATRIX</span>
-
-                    <div class="matrix">
-                        ${formatMatrix(data.inverse_key)}
-                    </div>
-
-                </div>
-
-
-                <div class="result-item">
-
-                    <span>STEGANOGRAPHY</span>
-
                     <div class="result-value">
-                        ✓ Encrypted data successfully
-                        hidden inside image.
+                        ${escapeHtml(data.sdes_output)}
                     </div>
-
                 </div>
 
+                <div class="result-item">
+                    <span>STEGANOGRAPHY</span>
+                    <div class="result-value">
+                        ✓ Data successfully hidden inside image.
+                    </div>
+                </div>
 
                 <a
                     class="download-btn"
-                    href="data:image/png;base64,${data.image}"
+                    href="${downloadUrl}"
                     download="hybridcrypt_encrypted.png">
 
                     ↓ DOWNLOAD ENCRYPTED IMAGE
@@ -297,20 +198,18 @@ async function encryptMessage() {
             </div>
         `;
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         resultBox.innerHTML = `
 
-            <div class="result-card error">
+            <div class="result-card">
 
-                <h2>✕ ENCRYPTION FAILED</h2>
+                <h2 style="color:#ff7777">
+                    ✕ ENCRYPTION FAILED
+                </h2>
 
-                <p>
-                    ${escapeHtml(
-                        error.message
-                    )}
+                <p style="color:#ff7777;font-size:10px">
+                    ${escapeHtml(error.message)}
                 </p>
 
             </div>
@@ -326,40 +225,24 @@ async function encryptMessage() {
 async function decryptMessage() {
 
     const image =
-        document.getElementById(
-            "decryptImage"
-        ).files[0];
-
+        document.getElementById("decryptImage").files[0];
 
     const hillKey =
-        document.getElementById(
-            "decryptHillKey"
-        ).value.trim();
-
+        document.getElementById("decryptHillKey").value.trim();
 
     const hillSize =
-        document.getElementById(
-            "decryptHillSize"
-        ).value;
-
+        document.getElementById("decryptHillSize").value;
 
     const sdesKey =
-        document.getElementById(
-            "decryptSdesKey"
-        ).value.trim();
-
+        document.getElementById("decryptSdesKey").value.trim();
 
     const resultBox =
-        document.getElementById(
-            "decryptResult"
-        );
+        document.getElementById("decryptResult");
 
 
     if (!image) {
 
-        alert(
-            "Please select the encrypted image."
-        );
+        alert("Please select the encrypted image.");
 
         return;
     }
@@ -367,9 +250,7 @@ async function decryptMessage() {
 
     if (!hillKey) {
 
-        alert(
-            "Please enter the Hill Cipher matrix."
-        );
+        alert("Please enter the Hill Cipher key.");
 
         return;
     }
@@ -388,41 +269,21 @@ async function decryptMessage() {
     }
 
 
-    const formData =
-        new FormData();
+    const formData = new FormData();
 
-
-    formData.append(
-        "image",
-        image
-    );
-
-
-    formData.append(
-        "hill_key",
-        hillKey
-    );
-
-
-    formData.append(
-        "hill_size",
-        hillSize
-    );
-
-
-    formData.append(
-        "sdes_key",
-        sdesKey
-    );
+    formData.append("image", image);
+    formData.append("hill_key", hillKey);
+    formData.append("hill_size", hillSize);
+    formData.append("sdes_key", sdesKey);
 
 
     resultBox.innerHTML = `
 
-        <div class="result-card processing">
+        <div class="result-card">
 
             <h2>⟳ DECRYPTING...</h2>
 
-            <p>
+            <p style="color:#71867d;font-size:10px">
                 Extracting → S-DES → Hill Cipher
             </p>
 
@@ -433,85 +294,55 @@ async function decryptMessage() {
     try {
 
         const response =
-            await fetch(
-                "/decrypt",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
+            await fetch("/decrypt", {
+                method: "POST",
+                body: formData
+            });
 
         const data =
             await response.json();
 
 
-        if (
-            !response.ok ||
-            data.status === "error"
-        ) {
+        if (!response.ok || data.status === "error") {
 
             throw new Error(
-                data.message ||
-                "Decryption failed."
+                data.message || "Decryption failed."
             );
         }
 
 
         resultBox.innerHTML = `
 
-            <div class="result-card success">
+            <div class="result-card">
 
                 <h2>✓ DECRYPTION COMPLETE</h2>
-
 
                 <div class="result-item">
 
                     <span>EXTRACTED DATA</span>
 
-                    <div class="result-value binary">
-                        ${escapeHtml(
-                            data.extracted_data
-                        )}
+                    <div class="result-value">
+                        ${escapeHtml(data.extracted_data)}
                     </div>
 
                 </div>
-
 
                 <div class="result-item">
 
                     <span>S-DES DECRYPTED</span>
 
                     <div class="result-value">
-                        ${escapeHtml(
-                            data.sdes_output
-                        )}
+                        ${escapeHtml(data.sdes_output)}
                     </div>
 
                 </div>
-
 
                 <div class="result-item">
 
-                    <span>INVERSE MATRIX</span>
-
-                    <div class="matrix">
-                        ${formatMatrix(
-                            data.inverse_key
-                        )}
-                    </div>
-
-                </div>
-
-
-                <div class="result-item original">
-
                     <span>ORIGINAL MESSAGE</span>
 
-                    <div class="original-message">
-                        ${escapeHtml(
-                            data.original_message
-                        )}
+                    <div class="result-value">
+                        ${escapeHtml(data.original_message)}
                     </div>
 
                 </div>
@@ -519,20 +350,18 @@ async function decryptMessage() {
             </div>
         `;
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         resultBox.innerHTML = `
 
-            <div class="result-card error">
+            <div class="result-card">
 
-                <h2>✕ DECRYPTION FAILED</h2>
+                <h2 style="color:#ff7777">
+                    ✕ DECRYPTION FAILED
+                </h2>
 
-                <p>
-                    ${escapeHtml(
-                        error.message
-                    )}
+                <p style="color:#ff7777;font-size:10px">
+                    ${escapeHtml(error.message)}
                 </p>
 
             </div>
@@ -542,34 +371,7 @@ async function decryptMessage() {
 
 
 // ============================================================
-// MATRIX DISPLAY
-// ============================================================
-
-function formatMatrix(matrix) {
-
-    if (!matrix) {
-        return "";
-    }
-
-    return `
-        <div class="matrix-box">
-            ${matrix.map(
-                row => `
-                    <div class="matrix-row">
-                        ${row.map(
-                            value =>
-                                `<span>${value}</span>`
-                        ).join("")}
-                    </div>
-                `
-            ).join("")}
-        </div>
-    `;
-}
-
-
-// ============================================================
-// HTML ESCAPE
+// SECURITY
 // ============================================================
 
 function escapeHtml(text) {
@@ -582,3 +384,19 @@ function escapeHtml(text) {
 
     return div.innerHTML;
 }
+
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        updateHillPlaceholder();
+
+        updateDecryptHillPlaceholder();
+
+    }
+);
