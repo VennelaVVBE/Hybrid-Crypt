@@ -1,5 +1,5 @@
 // ============================================================
-// HILL CIPHER PLACEHOLDER
+// HILL MATRIX PLACEHOLDER
 // ============================================================
 
 function updateHillPlaceholder() {
@@ -13,27 +13,26 @@ function updateHillPlaceholder() {
     const help =
         document.getElementById("hillHelp");
 
-
-    if (size === "2") {
+    if (size === "3") {
 
         input.placeholder =
-            "2×2 example: 3,3;2,5";
+            "6,24,1;13,16,10;20,17,15";
 
-        help.textContent =
-            "Enter 2 rows. Example: 3,3;2,5";
+        help.innerText =
+            "Example: 6,24,1;13,16,10;20,17,15";
 
     } else {
 
         input.placeholder =
-            "3×3 example: 6,24,1;13,16,10;20,17,15";
+            "3,3;2,5";
 
-        help.textContent =
-            "Enter 3 rows. Example: 6,24,1;13,16,10;20,17,15";
+        help.innerText =
+            "Example: 3,3;2,5";
     }
 }
 
 
-function updateDecryptHillPlaceholder() {
+function updateDecryptPlaceholder() {
 
     const size =
         document.getElementById("decryptHillSize").value;
@@ -44,28 +43,27 @@ function updateDecryptHillPlaceholder() {
     const help =
         document.getElementById("decryptHillHelp");
 
-
-    if (size === "2") {
+    if (size === "3") {
 
         input.placeholder =
-            "2×2 example: 3,3;2,5";
+            "6,24,1;13,16,10;20,17,15";
 
-        help.textContent =
-            "Enter the same 2×2 Hill key used for encryption.";
+        help.innerText =
+            "Enter the same 3×3 matrix used for encryption.";
 
     } else {
 
         input.placeholder =
-            "3×3 example: 6,24,1;13,16,10;20,17,15";
+            "3,3;2,5";
 
-        help.textContent =
-            "Enter the same 3×3 Hill key used for encryption.";
+        help.innerText =
+            "Enter the same 2×2 matrix used for encryption.";
     }
 }
 
 
 // ============================================================
-// ENCRYPTION
+// ENCRYPT
 // ============================================================
 
 async function encryptMessage() {
@@ -89,8 +87,6 @@ async function encryptMessage() {
         document.getElementById("result");
 
 
-    // ---------------- VALIDATION ----------------
-
     if (!message) {
 
         alert("Please enter a secret message.");
@@ -101,7 +97,7 @@ async function encryptMessage() {
 
     if (!hillKey) {
 
-        alert("Please enter the Hill Cipher key.");
+        alert("Please enter a Hill Cipher matrix.");
 
         return;
     }
@@ -116,7 +112,6 @@ async function encryptMessage() {
 
 
     if (
-        !sdesKey ||
         sdesKey.length !== 10 ||
         !/^[01]+$/.test(sdesKey)
     ) {
@@ -128,8 +123,6 @@ async function encryptMessage() {
         return;
     }
 
-
-    // ---------------- FORM DATA ----------------
 
     const formData =
         new FormData();
@@ -160,15 +153,12 @@ async function encryptMessage() {
     );
 
 
-    // ---------------- PROCESSING ----------------
-
     resultBox.innerHTML = `
-
-        <div class="result-card">
+        <div class="result-card processing">
 
             <h2>⟳ PROCESSING ENCRYPTION...</h2>
 
-            <p style="color:#84918a">
+            <p>
                 Hill Cipher → S-DES → LSB Steganography
             </p>
 
@@ -204,17 +194,9 @@ async function encryptMessage() {
         }
 
 
-        // Convert base64 returned by Flask
-        // into a downloadable image
-
-        const downloadUrl =
-            "data:image/png;base64," +
-            data.image;
-
-
         resultBox.innerHTML = `
 
-            <div class="result-card">
+            <div class="result-card success">
 
                 <h2>✓ ENCRYPTION COMPLETE</h2>
 
@@ -224,11 +206,31 @@ async function encryptMessage() {
                     <span>ORIGINAL MESSAGE</span>
 
                     <div class="result-value">
-
                         ${escapeHtml(
                             data.original_message
                         )}
+                    </div>
 
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>HILL CIPHER MATRIX</span>
+
+                    <div class="matrix">
+                        ${formatMatrix(data.hill_key)}
+                    </div>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>DETERMINANT MOD 26</span>
+
+                    <div class="result-value">
+                        ${data.determinant}
                     </div>
 
                 </div>
@@ -239,11 +241,9 @@ async function encryptMessage() {
                     <span>HILL CIPHER OUTPUT</span>
 
                     <div class="result-value">
-
                         ${escapeHtml(
                             data.hill_output
                         )}
-
                     </div>
 
                 </div>
@@ -253,12 +253,21 @@ async function encryptMessage() {
 
                     <span>S-DES OUTPUT</span>
 
-                    <div class="result-value">
-
+                    <div class="result-value binary">
                         ${escapeHtml(
                             data.sdes_output
                         )}
+                    </div>
 
+                </div>
+
+
+                <div class="result-item">
+
+                    <span>INVERSE MATRIX</span>
+
+                    <div class="matrix">
+                        ${formatMatrix(data.inverse_key)}
                     </div>
 
                 </div>
@@ -269,10 +278,8 @@ async function encryptMessage() {
                     <span>STEGANOGRAPHY</span>
 
                     <div class="result-value">
-
                         ✓ Encrypted data successfully
-                        hidden inside the image.
-
+                        hidden inside image.
                     </div>
 
                 </div>
@@ -280,9 +287,8 @@ async function encryptMessage() {
 
                 <a
                     class="download-btn"
-                    href="${downloadUrl}"
-                    download="hybridcrypt_encrypted.png"
-                >
+                    href="data:image/png;base64,${data.image}"
+                    download="hybridcrypt_encrypted.png">
 
                     ↓ DOWNLOAD ENCRYPTED IMAGE
 
@@ -297,18 +303,14 @@ async function encryptMessage() {
 
         resultBox.innerHTML = `
 
-            <div class="result-card">
+            <div class="result-card error">
 
-                <h2 style="color:#ff7777">
-                    ✕ ENCRYPTION FAILED
-                </h2>
+                <h2>✕ ENCRYPTION FAILED</h2>
 
-                <p style="color:#ff7777">
-
+                <p>
                     ${escapeHtml(
                         error.message
                     )}
-
                 </p>
 
             </div>
@@ -318,7 +320,7 @@ async function encryptMessage() {
 
 
 // ============================================================
-// DECRYPTION
+// DECRYPT
 // ============================================================
 
 async function decryptMessage() {
@@ -328,28 +330,30 @@ async function decryptMessage() {
             "decryptImage"
         ).files[0];
 
+
     const hillKey =
         document.getElementById(
             "decryptHillKey"
         ).value.trim();
+
 
     const hillSize =
         document.getElementById(
             "decryptHillSize"
         ).value;
 
+
     const sdesKey =
         document.getElementById(
             "decryptSdesKey"
         ).value.trim();
+
 
     const resultBox =
         document.getElementById(
             "decryptResult"
         );
 
-
-    // ---------------- VALIDATION ----------------
 
     if (!image) {
 
@@ -364,7 +368,7 @@ async function decryptMessage() {
     if (!hillKey) {
 
         alert(
-            "Please enter the Hill Cipher key."
+            "Please enter the Hill Cipher matrix."
         );
 
         return;
@@ -372,7 +376,6 @@ async function decryptMessage() {
 
 
     if (
-        !sdesKey ||
         sdesKey.length !== 10 ||
         !/^[01]+$/.test(sdesKey)
     ) {
@@ -384,8 +387,6 @@ async function decryptMessage() {
         return;
     }
 
-
-    // ---------------- FORM DATA ----------------
 
     const formData =
         new FormData();
@@ -415,20 +416,14 @@ async function decryptMessage() {
     );
 
 
-    // ---------------- PROCESSING ----------------
-
     resultBox.innerHTML = `
 
-        <div class="result-card">
+        <div class="result-card processing">
 
             <h2>⟳ DECRYPTING...</h2>
 
-            <p style="color:#84918a">
-
-                Extracting →
-                S-DES →
-                Hill Cipher
-
+            <p>
+                Extracting → S-DES → Hill Cipher
             </p>
 
         </div>
@@ -465,7 +460,7 @@ async function decryptMessage() {
 
         resultBox.innerHTML = `
 
-            <div class="result-card">
+            <div class="result-card success">
 
                 <h2>✓ DECRYPTION COMPLETE</h2>
 
@@ -474,12 +469,10 @@ async function decryptMessage() {
 
                     <span>EXTRACTED DATA</span>
 
-                    <div class="result-value">
-
+                    <div class="result-value binary">
                         ${escapeHtml(
                             data.extracted_data
                         )}
-
                     </div>
 
                 </div>
@@ -490,11 +483,9 @@ async function decryptMessage() {
                     <span>S-DES DECRYPTED</span>
 
                     <div class="result-value">
-
                         ${escapeHtml(
                             data.sdes_output
                         )}
-
                     </div>
 
                 </div>
@@ -502,14 +493,25 @@ async function decryptMessage() {
 
                 <div class="result-item">
 
+                    <span>INVERSE MATRIX</span>
+
+                    <div class="matrix">
+                        ${formatMatrix(
+                            data.inverse_key
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div class="result-item original">
+
                     <span>ORIGINAL MESSAGE</span>
 
-                    <div class="result-value">
-
+                    <div class="original-message">
                         ${escapeHtml(
                             data.original_message
                         )}
-
                     </div>
 
                 </div>
@@ -523,20 +525,14 @@ async function decryptMessage() {
 
         resultBox.innerHTML = `
 
-            <div class="result-card">
+            <div class="result-card error">
 
-                <h2 style="color:#ff7777">
+                <h2>✕ DECRYPTION FAILED</h2>
 
-                    ✕ DECRYPTION FAILED
-
-                </h2>
-
-                <p style="color:#ff7777">
-
+                <p>
                     ${escapeHtml(
                         error.message
                     )}
-
                 </p>
 
             </div>
@@ -546,7 +542,34 @@ async function decryptMessage() {
 
 
 // ============================================================
-// HTML SECURITY
+// MATRIX DISPLAY
+// ============================================================
+
+function formatMatrix(matrix) {
+
+    if (!matrix) {
+        return "";
+    }
+
+    return `
+        <div class="matrix-box">
+            ${matrix.map(
+                row => `
+                    <div class="matrix-row">
+                        ${row.map(
+                            value =>
+                                `<span>${value}</span>`
+                        ).join("")}
+                    </div>
+                `
+            ).join("")}
+        </div>
+    `;
+}
+
+
+// ============================================================
+// HTML ESCAPE
 // ============================================================
 
 function escapeHtml(text) {
@@ -559,19 +582,3 @@ function escapeHtml(text) {
 
     return div.innerHTML;
 }
-
-
-// ============================================================
-// INITIAL SETUP
-// ============================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        updateHillPlaceholder();
-
-        updateDecryptHillPlaceholder();
-
-    }
-);
